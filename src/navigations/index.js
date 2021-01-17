@@ -2,22 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { Home, Interest, Content, ProfilePicker } from '../screens';
-import { readData } from '../storage';
+import { clearAll_TEST, readData } from '../storage';
 
 const Stack = createStackNavigator();
 
 const NavigationStack = () => {
-  const [showCategories, setShowCategories] = useState(false);
+  const [userData, setUserData] = useState({});
 
   useEffect(() => {
     readData().then((data) => {
-      if (data && data.interest !== null && data.profileImage !== null) {
-        setShowCategories(false);
-      } else {
-        setShowCategories(true);
-      }
+      setUserData(data);
     });
-  }, [showCategories]);
+    // clearAll_TEST();
+  }, [userData]);
 
   const horizontalAnimation = {
     cardStyleInterpolator: ({ current, layouts }) => ({
@@ -38,7 +35,7 @@ const NavigationStack = () => {
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
       initialRouteName={'Home'}>
-      {!showCategories ? (
+      {userData?.interest?.length && userData?.profileImage !== null ? (
         <>
           <Stack.Screen
             name={'Home'}

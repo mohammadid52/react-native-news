@@ -104,6 +104,7 @@ const Interest = ({ navigation }) => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View>
+        <Text style={styles.header}>1. Select Category</Text>
         <View style={styles.categoryContainer}>
           {categories.map((category) => (
             <Category
@@ -127,10 +128,7 @@ const Interest = ({ navigation }) => {
             justifyContent: 'flex-end',
             flexDirection: 'row',
           }}>
-          <TouchableOpacity
-            onPress={handlePress}
-            // disabled={selectedCategories.length < 2}
-            style={styles.goNextButton}>
+          <TouchableOpacity onPress={handlePress} style={styles.goNextButton}>
             <Text style={styles.buttonText}>Next</Text>
             <MaterialIcons
               name={'keyboard-arrow-right'}
@@ -147,6 +145,12 @@ const Interest = ({ navigation }) => {
 export default Interest;
 
 const styles = StyleSheet.create({
+  header: {
+    padding: 10,
+    fontFamily: 'Steradian Medium',
+    fontSize: 25,
+    color: '#000',
+  },
   container: {
     backgroundColor: '#fff',
     padding: 30,

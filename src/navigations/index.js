@@ -1,18 +1,29 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { Home, Interest, Content } from '../screens';
+import { readInterest } from '../storage';
 
 const Stack = createStackNavigator();
 
-const interest = false;
-
 const NavigationStack = () => {
+  const [showCategories, setShowCategories] = useState(true);
+
+  useEffect(() => {
+    readInterest().then((interest) => {
+      if (interest !== null) {
+        setShowCategories(false);
+      } else {
+        setShowCategories(true);
+      }
+    });
+  }, []);
+
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
       initialRouteName={'Interest'}>
-      {interest ? (
+      {!showCategories ? (
         <>
           <Stack.Screen name={'Home'} component={Home} />
           <Stack.Screen name={'Content'} component={Content} />

@@ -9,6 +9,8 @@ import {
   ScrollView,
   Animated,
 } from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { storeInterest } from '../storage';
 
@@ -58,13 +60,13 @@ const Category = ({ category, setSelectedCategories, selectedCategories }) => {
             backgroundColor: isSelected ? '#4275b7' : '#fff',
           },
         ]}>
-        <Text
-          style={[
-            styles.text,
-            { marginRight: 10, color: isSelected ? '#fff' : '#4275b7' },
-          ]}>
-          {isSelected ? '-' : '+'}
-        </Text>
+        <AntDesign
+          name={isSelected ? 'minus' : 'plus'}
+          color={isSelected ? '#fff' : '#4275b7'}
+          size={17}
+          style={{ marginRight: 5 }}
+        />
+
         <Text style={[styles.text, { color: isSelected ? '#fff' : '#4275b7' }]}>
           {category}
         </Text>
@@ -88,14 +90,25 @@ const Interest = () => {
               selectedCategories={selectedCategories}
             />
           ))}
+          <Text style={styles.requiredText}>Select Atleast Two Interests</Text>
         </View>
-        <Text style={styles.requiredText}>Select Atleast Two</Text>
-        <TouchableOpacity
-          onPress={() => storeInterest(selectedCategories)}
-          disabled={selectedCategories.length < 2}
-          style={styles.goNextButton}>
-          <Text style={styles.buttonText}>Next</Text>
-        </TouchableOpacity>
+        <View
+          style={{
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+          }}>
+          <TouchableOpacity
+            onPress={() => storeInterest(selectedCategories)}
+            disabled={selectedCategories.length < 2}
+            style={styles.goNextButton}>
+            <Text style={styles.buttonText}>Next</Text>
+            <MaterialIcons
+              name={'keyboard-arrow-right'}
+              color={'#fff'}
+              size={25}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -105,7 +118,7 @@ export default Interest;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f1f6f9',
+    backgroundColor: '#fff',
     padding: 30,
     flex: 1,
     justifyContent: 'center',
@@ -115,23 +128,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderWidth: 1,
-    paddingHorizontal: 25,
+    paddingHorizontal: 20,
     paddingVertical: 10,
     borderColor: '#4275b7',
     margin: 10,
     borderRadius: 10,
+    alignItems: 'center',
   },
   text: {
     fontSize: 17,
     color: '#4275b7',
     textTransform: 'capitalize',
+    fontFamily: 'Steradian Light',
   },
   categoryContainer: {
     flexWrap: 'wrap',
     flexDirection: 'row',
+    marginBottom: 40,
   },
   requiredText: {
     color: '#bbb',
+    fontFamily: 'Steradian Medium',
     margin: 10,
   },
   goNextButton: {
@@ -139,10 +156,15 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     margin: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 140,
   },
   buttonText: {
     textAlign: 'center',
     color: 'white',
     fontSize: 20,
+    fontFamily: 'Steradian Medium',
   },
 });

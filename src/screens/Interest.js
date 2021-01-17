@@ -8,11 +8,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Animated,
+  Vibration,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import { storeInterest } from '../storage';
+import { storeData } from '../storage';
 
 const categories = [
   'business',
@@ -24,7 +25,12 @@ const categories = [
   'technology',
 ];
 
-const Category = ({ category, setSelectedCategories, selectedCategories }) => {
+const Category = ({
+  category,
+  setSelectedCategories,
+  selectedCategories,
+  setError,
+}) => {
   const [isSelected, setIsSelected] = useState(false);
 
   const opacity = useRef(new Animated.Value(0)).current;
@@ -32,7 +38,7 @@ const Category = ({ category, setSelectedCategories, selectedCategories }) => {
   useEffect(() => {
     Animated.timing(opacity, {
       toValue: 1,
-      duration: 1000,
+      duration: 1400,
       useNativeDriver: false,
     }).start();
   }, []);
@@ -51,6 +57,7 @@ const Category = ({ category, setSelectedCategories, selectedCategories }) => {
     <Animated.View style={{ opacity }}>
       <TouchableOpacity
         onPress={() => {
+          setError(false);
           setIsSelected(!isSelected);
           addCategory(category, isSelected);
         }}
@@ -75,8 +82,24 @@ const Category = ({ category, setSelectedCategories, selectedCategories }) => {
   );
 };
 
-const Interest = () => {
+const Interest = ({ navigation }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [error, setError] = useState(false);
+
+  const handlePress = () => {
+    if (selectedCategories.length < 2) {
+      setError(true);
+      Vibration.vibrate(100);
+      return;
+    }
+    const newUserData = {
+      interest: selectedCategories,
+      profileImage: null,
+    };
+
+    storeData(newUserData);
+    navigation.navigate('ProfilePicker');
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -88,9 +111,16 @@ const Interest = () => {
               category={category}
               setSelectedCategories={setSelectedCategories}
               selectedCategories={selectedCategories}
+              setError={setError}
             />
           ))}
-          <Text style={styles.requiredText}>Select Atleast Two Interests</Text>
+          <Text
+            style={[
+              styles.requiredText,
+              { color: error ? '#eb596e' : '#bbb' },
+            ]}>
+            Select Atleast Two Interests
+          </Text>
         </View>
         <View
           style={{
@@ -98,8 +128,8 @@ const Interest = () => {
             flexDirection: 'row',
           }}>
           <TouchableOpacity
-            onPress={() => storeInterest(selectedCategories)}
-            disabled={selectedCategories.length < 2}
+            onPress={handlePress}
+            // disabled={selectedCategories.length < 2}
             style={styles.goNextButton}>
             <Text style={styles.buttonText}>Next</Text>
             <MaterialIcons

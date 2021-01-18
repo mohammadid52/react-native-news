@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import moment from 'moment';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -15,7 +16,9 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import { useUser } from '../context';
 import { getAllNewsByCountry } from '../api';
 import AvatarList from '../constants/avatars';
-import { find } from 'lodash';
+import { find, orderBy } from 'lodash';
+
+const { width } = Dimensions.get('screen');
 
 const Home = () => {
   const imagePath = find(AvatarList, { id: 1 }).img;
@@ -48,15 +51,31 @@ const Home = () => {
 
   useEffect(() => {
     fetch(
-      'https://newsapi.org/v2/top-headlines?country=us&apiKey=29ec909f68cf4ceeb5a300eddef2cdb0',
+      'https://newsapi.org/v2/top-headlines?country=in&apiKey=29ec909f68cf4ceeb5a300eddef2cdb0',
     )
       .then((response) => response.json())
-      .then((data) => setNews(data));
+      .then((data) => {
+        const ordered = orderBy(data.articles, 'publishedAt', 'desc');
+        setNews(ordered);
+      });
   }, []);
 
-  // const renderFirstNews = () => (
-  //   <Vo
-  // )
+  const renderFirstNews = () => {
+    const firstArticle = news[0];
+    return (
+      <View style={styles.firstCard}>
+        <Image
+          source={{ uri: firstArticle.urlToImage }}
+          style={styles.firstCard_image}
+        />
+        <View style={{ padding: 20 }}>
+          <Text style={styles.firstCard_title}>
+            {firstArticle.title.substring(0, 60) + '...'}
+          </Text>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -66,9 +85,7 @@ const Home = () => {
         {!news ? (
           <ActivityIndicator size={'large'} color={'rgb(26,80,139)'} />
         ) : (
-          <View>
-            <Text>{news.articles[0].author}</Text>
-          </View>
+          renderFirstNews()
         )}
       </ScrollView>
     </View>
@@ -95,11 +112,26 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   titleContainer: {
-    marginVertical: 30,
+    marginVertical: 20,
   },
   title: {
     fontSize: 40,
-    fontFamily: 'Steradian Medium',
+    fontFamily: 'Steradian Black',
     color: 'rgb(26,80,139)',
+  },
+  firstCard: {
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    height: 300,
+  },
+  firstCard_image: {
+    height: 200,
+    resizeMode: 'cover',
+    borderRadius: 25,
+  },
+  firstCard_title: {
+    fontSize: 20,
+    fontFamily: 'Steradian Medium',
+    color: '#0f4c75',
   },
 });

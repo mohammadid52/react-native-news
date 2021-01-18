@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
 import { Home, Interest, Content, ProfilePicker } from '../screens';
 import { readData } from '../storage';
 import { useUser } from '../context';
 import * as keys from '../keys';
 
-const Stack = createStackNavigator();
+const Stack = createSharedElementStackNavigator();
 
 const NavigationStack = () => {
   const [user, setUser] = useState(null);
@@ -63,12 +63,12 @@ const NavigationStack = () => {
           <Stack.Screen
             name={'Home'}
             component={Home}
-            options={horizontalAnimation}
+            // options={horizontalAnimation}
           />
           <Stack.Screen
             name={'Content'}
             component={Content}
-            options={horizontalAnimation}
+            // options={horizontalAnimation}
           />
         </>
       )}

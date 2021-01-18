@@ -10,6 +10,7 @@ import {
   Dimensions,
 } from 'react-native';
 import moment from 'moment';
+import { SharedElement } from 'react-navigation-shared-element';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
@@ -101,48 +102,50 @@ const Home = () => {
     };
     return (
       <View>
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={handlePress}
-          style={styles.newsCard}>
-          <Image
-            source={{ uri: item.urlToImage }}
-            style={styles.newsCard_image}
-          />
-          <View
-            style={{
-              justifyContent: 'space-between',
-              padding: 10,
-              flexShrink: 1,
-            }}>
-            <View>
-              <Text style={styles.newsCard__title}>
-                {item.title.substring(0, 60) + '...'}
-              </Text>
-            </View>
+        <SharedElement id={item.url}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={handlePress}
+            style={styles.newsCard}>
+            <Image
+              source={{ uri: item.urlToImage }}
+              style={styles.newsCard_image}
+            />
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
                 justifyContent: 'space-between',
+                padding: 10,
+                flexShrink: 1,
               }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <AntDesign name="calendar" size={17} color={'#8d93ab'} />
-                <Text style={styles.newsCard__bottomText}>
-                  {moment(item.publishedAt).format('ll')}
+              <View>
+                <Text style={styles.newsCard__title}>
+                  {item.title.substring(0, 60) + '...'}
                 </Text>
               </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <MaterialCommunityIcons
-                  name="clock-time-five-outline"
-                  size={17}
-                  color={'#8d93ab'}
-                />
-                <Text style={styles.newsCard__bottomText}>10 min read</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <AntDesign name="calendar" size={17} color={'#8d93ab'} />
+                  <Text style={styles.newsCard__bottomText}>
+                    {moment(item.publishedAt).format('ll')}
+                  </Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <MaterialCommunityIcons
+                    name="clock-time-five-outline"
+                    size={17}
+                    color={'#8d93ab'}
+                  />
+                  <Text style={styles.newsCard__bottomText}>10 min read</Text>
+                </View>
               </View>
             </View>
-          </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </SharedElement>
       </View>
     );
   };

@@ -6,25 +6,22 @@ import {
   Text,
   TouchableOpacity,
   View,
-  ScrollView,
   ActivityIndicator,
   Dimensions,
 } from 'react-native';
 import moment from 'moment';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
 
-import { useUser } from '../context';
-import { getAllNewsByCountry } from '../api';
 import AvatarList from '../constants/avatars';
 import { find, orderBy } from 'lodash';
 import { FlatList } from 'react-native-gesture-handler';
 
-const { width } = Dimensions.get('screen');
-
 const Home = () => {
   const imagePath = find(AvatarList, { id: 1 }).img;
   const [news, setNews] = useState(null);
+  const navigation = useNavigation();
 
   const renderHeader = () => (
     <View style={styles.header}>
@@ -63,13 +60,20 @@ const Home = () => {
   }, []);
 
   const renderFirstNews = () => {
-    const firstArticle = news[0];
+    const firstArticle = news[1];
+
+    const handlePress = () => {
+      navigation.navigate('Content', firstArticle);
+    };
+
     return (
       <View style={styles.firstCard}>
-        <Image
-          source={{ uri: firstArticle.urlToImage }}
-          style={styles.firstCard_image}
-        />
+        <TouchableOpacity onPress={handlePress} activeOpacity={0.9}>
+          <Image
+            source={{ uri: firstArticle.urlToImage }}
+            style={styles.firstCard_image}
+          />
+        </TouchableOpacity>
         <View style={{ padding: 20 }}>
           <Text style={styles.firstCard_title}>
             {firstArticle.title.substring(0, 60) + '...'}
@@ -92,45 +96,53 @@ const Home = () => {
   };
 
   const renderAllNews = ({ item }) => {
+    const handlePress = () => {
+      navigation.navigate('Content', item);
+    };
     return (
-      <View style={styles.newsCard}>
-        <Image
-          source={{ uri: item.urlToImage }}
-          style={styles.newsCard_image}
-        />
-        <View
-          style={{
-            justifyContent: 'space-between',
-            padding: 10,
-            flexShrink: 1,
-          }}>
-          <View>
-            <Text style={styles.newsCard__title}>
-              {item.title.substring(0, 60) + '...'}
-            </Text>
-          </View>
+      <View>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={handlePress}
+          style={styles.newsCard}>
+          <Image
+            source={{ uri: item.urlToImage }}
+            style={styles.newsCard_image}
+          />
           <View
             style={{
-              flexDirection: 'row',
-              alignItems: 'center',
               justifyContent: 'space-between',
+              padding: 10,
+              flexShrink: 1,
             }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <AntDesign name="calendar" size={17} color={'#8d93ab'} />
-              <Text style={styles.newsCard__bottomText}>
-                {moment(item.publishedAt).format('ll')}
+            <View>
+              <Text style={styles.newsCard__title}>
+                {item.title.substring(0, 60) + '...'}
               </Text>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <MaterialCommunityIcons
-                name="clock-time-five-outline"
-                size={17}
-                color={'#8d93ab'}
-              />
-              <Text style={styles.newsCard__bottomText}>10 min read</Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <AntDesign name="calendar" size={17} color={'#8d93ab'} />
+                <Text style={styles.newsCard__bottomText}>
+                  {moment(item.publishedAt).format('ll')}
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <MaterialCommunityIcons
+                  name="clock-time-five-outline"
+                  size={17}
+                  color={'#8d93ab'}
+                />
+                <Text style={styles.newsCard__bottomText}>10 min read</Text>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     );
   };
@@ -138,7 +150,7 @@ const Home = () => {
   const HeaderComponent = () => {
     return (
       <>
-        {renderTitle()}
+        {/* {renderTitle()} */}
         {renderFirstNews()}
       </>
     );
@@ -171,6 +183,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 30,
     paddingVertical: 50,
+    backgroundColor: '#FAFAFA',
   },
   header: {
     flexDirection: 'row',
@@ -194,13 +207,12 @@ const styles = StyleSheet.create({
     color: 'rgb(26,80,139)',
   },
   firstCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f4f3f3',
     borderRadius: 25,
-    height: 320,
     marginBottom: 40,
   },
   firstCard_image: {
-    height: 200,
+    height: 240,
     resizeMode: 'cover',
     borderRadius: 25,
   },

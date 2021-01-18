@@ -12,6 +12,12 @@ target 'mynews' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
+  pod 'RNSharedElement', :path => '../node_modules/react-native-shared-element'
+
   target 'mynewsTests' do
     inherit! :complete
     # Pods for testing

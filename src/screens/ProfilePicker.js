@@ -5,7 +5,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import AvatarList from '../constants/avatars';
-import { addProfileIdx } from '../storage';
+import { storeData } from '../storage';
+import * as keys from '../keys';
 
 const ProfilePicker = ({ navigation }) => {
   const [selectedIdx, setSelectedIdx] = useState(null);
@@ -22,10 +23,11 @@ const ProfilePicker = ({ navigation }) => {
   };
 
   const handleNext = () => {
-    addProfileIdx(selectedIdx);
+    storeData(selectedIdx, keys.PROFILE_IMAGE);
+    navigation.navigate('Home');
   };
 
-  const goBack = () => navigation.goBack();
+  const goBack = () => navigation.navigate('Interest');
 
   return (
     <View style={styles.container}>

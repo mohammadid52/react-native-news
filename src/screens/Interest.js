@@ -14,6 +14,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import { storeData } from '../storage';
+import * as keys from '../keys';
 
 const categories = [
   'business',
@@ -36,11 +37,14 @@ const Category = ({
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    Animated.timing(opacity, {
+    const unsubscribe = Animated.timing(opacity, {
       toValue: 1,
       duration: 1400,
       useNativeDriver: false,
     }).start();
+    return () => {
+      unsubscribe;
+    };
   }, []);
 
   const addCategory = (name, selected) => {
@@ -92,12 +96,8 @@ const Interest = ({ navigation }) => {
       Vibration.vibrate(100);
       return;
     }
-    const newUserData = {
-      interest: selectedCategories,
-      profileImage: null,
-    };
 
-    storeData(newUserData);
+    storeData(selectedCategories, keys.INTEREST);
     navigation.navigate('ProfilePicker');
   };
 

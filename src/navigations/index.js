@@ -2,19 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import { Home, Interest, Content, ProfilePicker } from '../screens';
-import { clearAll_TEST, readData } from '../storage';
+import { readData } from '../storage';
+import { useUser } from '../context';
+import * as keys from '../keys';
 
 const Stack = createStackNavigator();
 
 const NavigationStack = () => {
-  const [userData, setUserData] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    readData().then((data) => {
-      setUserData(data);
+    readData(keys.INTEREST).then((data) => {
+      if (data.length) {
+        setUser(true);
+      } else {
+        setUser(false);
+      }
     });
-    // clearAll_TEST();
-  }, [userData]);
+    readData(keys.PROFILE_IMAGE).then((data) => {
+      if (data !== null) {
+        setUser(true);
+      } else {
+        setUser(false);
+      }
+    });
+  }, [user]);
 
   const horizontalAnimation = {
     cardStyleInterpolator: ({ current, layouts }) => ({
@@ -32,23 +44,8 @@ const NavigationStack = () => {
   };
 
   return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName={'Home'}>
-      {userData?.interest?.length && userData?.profileImage !== null ? (
-        <>
-          <Stack.Screen
-            name={'Home'}
-            component={Home}
-            options={horizontalAnimation}
-          />
-          <Stack.Screen
-            name={'Content'}
-            component={Content}
-            options={horizontalAnimation}
-          />
-        </>
-      ) : (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {!user ? (
         <>
           <Stack.Screen
             name={'Interest'}
@@ -58,6 +55,19 @@ const NavigationStack = () => {
           <Stack.Screen
             name={'ProfilePicker'}
             component={ProfilePicker}
+            options={horizontalAnimation}
+          />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name={'Home'}
+            component={Home}
+            options={horizontalAnimation}
+          />
+          <Stack.Screen
+            name={'Content'}
+            component={Content}
             options={horizontalAnimation}
           />
         </>
